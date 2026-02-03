@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로또 번호 생성기</title>
+    <style>
+        /* 스타일 정의 */
+        body {
+            font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+
+        .lotto-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        h1 {
+            margin: 0 0 20px 0;
+            color: #333;
+        }
+
+        /* 컨트롤 패널 (게임 수, 보너스 선택) */
+        .controls {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .control-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        select {
+            padding: 5px 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* 결과 화면 영역 */
+        .result-area {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+            min-height: 150px; /* 결과 없을 때 최소 높이 */
+            justify-content: center;
+        }
+
+        .lotto-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* 왼쪽 정렬 */
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 10px;
+        }
+
+        .row-label {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4285f4;
+            margin-right: 15px;
+            min-width: 20px;
+        }
+
+        .balls-wrapper {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap; /* 모바일에서 줄바꿈 허용 */
+        }
+
+        .ball {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 15px;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .plus-sign {
+            font-size: 20px;
+            font-weight: bold;
+            color: #999;
+            margin: 0 5px;
+        }
+
+        .bonus-label {
+            font-size: 10px;
+            color: #888;
+            margin-left: -4px;
+            margin-right: 4px;
+        }
+
+        /* 공 색상 */
+        .ball.yellow { background-color: #fbc400; }
+        .ball.blue { background-color: #69c8f2; }
+        .ball.red { background-color: #ff7272; }
+        .ball.grey { background-color: #aaaaaa; }
+        .ball.green { background-color: #b0d840; }
+
+        /* 버튼 스타일 */
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        button:hover { background-color: #3367d6; transform: translateY(-2px); }
+        button:active { transform: translateY(0); }
+
+    </style>
+</head>
+<body>
+
+    <div class="lotto-container">
+        <h1>🎰 로또 번호 생성기</h1>
+
+        <div class="controls">
+            <div class="control-item">
+                <label for="gameCount">게임 수:</label>
+                <select id="gameCount">
+                    <option value="1">1게임</option>
+                    <option value="2">2게임</option>
+                    <option value="3">3게임</option>
+                    <option value="4">4게임</option>
+                    <option value="5" selected>5게임</option>
+                </select>
+            </div>
+            <div class="control-item">
+                <input type="checkbox" id="bonusToggle" checked>
+                <label for="bonusToggle">보너스 번호 포함</label>
+            </div>
+        </div>
+
+        <div class="result-area" id="result">
+            <p style="color:#aaa;">'번호 생성하기' 버튼을 눌러주세요.</p>
+        </div>
+
+        <button onclick="generateLotto()">번호 생성하기</button>
+    </div>
+
+    <script>
+        // 로또 생성 함수
+        function generateLotto() {
+            // 1. 사용자 입력값 가져오기
+            const gameCount = parseInt(document.getElementById('gameCount').value);
+            const includeBonus = document.getElementById('bonusToggle').checked;
+            const resultDiv = document.getElementById('result');
+            const rowLabels = ['A', 'B', 'C', 'D', 'E'];
+
+            // 2. 화면 초기화
+            resultDiv.innerHTML = '';
+
+            // 3. 게임 수만큼 반복
+            for (let i = 0; i < gameCount; i++) {
+                
+                // 번호 뽑기 (중복 제거를 위해 Set 사용)
+                const numbers = new Set();
+                while (numbers.size < 6) {
+                    numbers.add(Math.floor(Math.random() * 45) + 1);
+                }
+
+                // 배열로 변환 후 정렬 (오름차순)
+                const mainNumbers = Array.from(numbers).sort((a, b) => a - b);
+                
+                // 보너스 번호 뽑기 (기본 6개와 중복되지 않아야 함)
+                let bonusNumber = null;
+                if (includeBonus) {
+                    while (true) {
+                        const tempBonus = Math.floor(Math.random() * 45) + 1;
+                        if (!numbers.has(tempBonus)) {
+                            bonusNumber = tempBonus;
+                            break;
+                        }
+                    }
+                }
+
+                // --- HTML 요소 생성 ---
+                
+                // 1) 행(Row) 생성
+                const rowDiv = document.createElement('div');
+                rowDiv.classList.add('lotto-row');
+
+                // 2) 라벨 (A, B, C...)
+                const labelSpan = document.createElement('span');
+                labelSpan.classList.add('row-label');
+                labelSpan.innerText = rowLabels[i];
+                rowDiv.appendChild(labelSpan);
+
+                // 3) 공 래퍼
+                const ballsWrapper = document.createElement('div');
+                ballsWrapper.classList.add('balls-wrapper');
+
+                // 4) 메인 번호 6개 그리기
+                mainNumbers.forEach(num => {
+                    ballsWrapper.appendChild(createBall(num));
+                });
+
+                // 5) 보너스 번호 그리기 (옵션)
+                if (includeBonus && bonusNumber !== null) {
+                    // 더하기 기호
+                    const plusSpan = document.createElement('span');
+                    plusSpan.classList.add('plus-sign');
+                    plusSpan.innerText = '+';
+                    ballsWrapper.appendChild(plusSpan);
+
+                    // 보너스 공
+                    ballsWrapper.appendChild(createBall(bonusNumber));
+                    
+                    // 보너스 텍스트 표시
+                    const bonusText = document.createElement('span');
+                    bonusText.classList.add('bonus-label');
+                    bonusText.innerText = '보너스';
+                    ballsWrapper.appendChild(bonusText);
+                }
+
+                rowDiv.appendChild(ballsWrapper);
+                resultDiv.appendChild(rowDiv);
+            }
+        }
+
+        // 공(Ball) HTML을 만들어주는 헬퍼 함수
+        function createBall(number) {
+            const ball = document.createElement('div');
+            ball.classList.add('ball');
+            ball.innerText = number;
+
+            // 색상 클래스 적용
+            if (number <= 10) ball.classList.add('yellow');
+            else if (number <= 20) ball.classList.add('blue');
+            else if (number <= 30) ball.classList.add('red');
+            else if (number <= 40) ball.classList.add('grey');
+            else ball.classList.add('green');
+
+            return ball;
+        }
+    </script>
+</body>
+</html>
