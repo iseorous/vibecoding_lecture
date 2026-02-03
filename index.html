@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로또 번호 생성기</title>
+    <title>VibeCoding Lecture</title>
     <style>
-        /* 스타일 정의 */
+        /* General Styles */
         body {
             font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
             display: flex;
@@ -17,7 +17,7 @@
             background-color: #f0f2f5;
         }
 
-        .lotto-container {
+        .main-container {
             background: white;
             padding: 30px;
             border-radius: 20px;
@@ -27,12 +27,45 @@
             max-width: 600px;
         }
 
+        /* Tabs */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            background-color: #eee;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-radius: 10px;
+            margin: 0 5px;
+        }
+
+        .tab-button.active {
+            background-color: #4285f4;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         h1 {
             margin: 0 0 20px 0;
             color: #333;
         }
 
-        /* 컨트롤 패널 (게임 수, 보너스 선택) */
+        /* Lotto Generator Styles */
         .controls {
             background-color: #f8f9fa;
             padding: 15px;
@@ -67,20 +100,19 @@
             cursor: pointer;
         }
 
-        /* 결과 화면 영역 */
         .result-area {
             display: flex;
             flex-direction: column;
             gap: 15px;
             margin-bottom: 25px;
-            min-height: 150px; /* 결과 없을 때 최소 높이 */
+            min-height: 150px;
             justify-content: center;
         }
 
         .lotto-row {
             display: flex;
             align-items: center;
-            justify-content: flex-start; /* 왼쪽 정렬 */
+            justify-content: flex-start;
             padding: 10px;
             background-color: #fff;
             border: 1px solid #eee;
@@ -99,7 +131,7 @@
             display: flex;
             gap: 6px;
             align-items: center;
-            flex-wrap: wrap; /* 모바일에서 줄바꿈 허용 */
+            flex-wrap: wrap;
         }
 
         .ball {
@@ -114,6 +146,12 @@
             color: white;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
+        
+        .ball.yellow { background-color: #fbc400; }
+        .ball.blue { background-color: #69c8f2; }
+        .ball.red { background-color: #ff7272; }
+        .ball.grey { background-color: #aaaaaa; }
+        .ball.green { background-color: #b0d840; }
 
         .plus-sign {
             font-size: 20px;
@@ -129,75 +167,56 @@
             margin-right: 4px;
         }
 
-        /* 공 색상 */
-        .ball.yellow { background-color: #fbc400; }
-        .ball.blue { background-color: #69c8f2; }
-        .ball.red { background-color: #ff7272; }
-        .ball.grey { background-color: #aaaaaa; }
-        .ball.green { background-color: #b0d840; }
+        /* Taste Test Styles */
+        #image-container {
+            width: 400px;
+            height: 400px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        /* 버튼 스타일 */
+        #image-preview {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        #label-container {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        input[type="file"] {
+            margin-top: 20px;
+        }
+
+        /* General Button Styles */
         button {
             background-color: #4285f4;
             color: white;
             border: none;
-            padding: 15px 50px;
+            padding: 15px 30px;
             font-size: 18px;
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
             transition: background-color 0.2s, transform 0.1s;
+            margin-top: 20px;
         }
         button:hover { background-color: #3367d6; transform: translateY(-2px); }
         button:active { transform: translateY(0); }
 
-        /* 테마 스위치 스타일 */
-        .theme-switch {
-            position: relative;
-            display: inline-block;
-            width: 40px;
-            height: 24px;
-        }
-        .theme-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        input:checked + .slider {
-            background-color: #4285f4;
-        }
-        input:checked + .slider:before {
-            transform: translateX(16px);
-        }
-
-        /* 다크 모드 스타일 */
+        /* Dark Mode Styles */
         body.dark-mode {
             background-color: #1a1a1a;
             color: #eee;
         }
-        body.dark-mode .lotto-container {
+        body.dark-mode .main-container {
             background: #2c2c2c;
             box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
@@ -217,215 +236,85 @@
         body.dark-mode .plus-sign {
             color: #ccc;
         }
-        body.dark-mode .result-area p {
-            color: #777 !important;
-        }
-
-        /* 폼 스타일 */
-        .contact-form-container {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .contact-form-container h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .contact-form .form-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        .contact-form label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
-
-        .contact-form input[type="text"],
-        .contact-form input[type="email"],
-        .contact-form textarea {
-            width: calc(100% - 20px);
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            box-sizing: border-box; /* 패딩이 너비에 포함되도록 */
-        }
-
-        .contact-form textarea {
-            resize: vertical; /* 세로 크기 조절 가능 */
-        }
-
-        .contact-form button[type="submit"] {
-            width: 100%;
-            padding: 12px;
-            background-color: #28a745; /* Green submit button */
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .contact-form button[type="submit"]:hover {
-            background-color: #218838;
-        }
-
-        .form-note {
-            text-align: center;
-            font-size: 14px;
-            color: #777;
-            margin-top: 15px;
-        }
-        .form-note a {
-            color: #4285f4;
-            text-decoration: none;
-        }
-        .form-note a:hover {
-            text-decoration: underline;
-        }
-
-        /* 다크 모드 폼 스타일 */
-        body.dark-mode .contact-form-container {
-            background-color: #333;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.4);
-        }
-        body.dark-mode .contact-form-container h2 {
-            color: #eee;
-        }
-        body.dark-mode .contact-form label {
-            color: #ddd;
-        }
-        body.dark-mode .contact-form input[type="text"],
-        body.dark-mode .contact-form input[type="email"],
-        body.dark-mode .contact-form textarea {
-            background-color: #444;
-            border-color: #555;
-            color: #eee;
-        }
-        body.dark-mode .form-note {
-            color: #aaa;
-        }
-        body.dark-mode .form-note a {
-            color: #69c8f2;
-        }
+        
     </style>
 </head>
 <body>
-
-    <div class="lotto-container">
-        <h1>🎰 로또 번호 생성기</h1>
-
-        <div class="controls">
-            <div class="control-item">
-                <label for="gameCount">게임 수:</label>
-                <select id="gameCount">
-                    <option value="1">1게임</option>
-                    <option value="2">2게임</option>
-                    <option value="3">3게임</option>
-                    <option value="4">4게임</option>
-                    <option value="5" selected>5게임</option>
-                </select>
-            </div>
-            <div class="control-item">
-                <input type="checkbox" id="bonusToggle" checked>
-                <label for="bonusToggle">보너스 번호 포함</label>
-            </div>
-            <div class="control-item">
-                <label class="theme-switch">
-                    <input type="checkbox" id="themeToggle">
-                    <span class="slider"></span>
-                </label>
-                <label for="themeToggle">다크 모드</label>
-            </div>
+    <div class="main-container">
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab('lotto')">로또 번호 생성기</button>
+            <button class="tab-button" onclick="openTab('taste-test')">취향 테스트</button>
         </div>
 
-        <div class="result-area" id="result">
-            <p style="color:#aaa;">'번호 생성하기' 버튼을 눌러주세요.</p>
+        <div id="lotto-tab" class="tab-content active">
+            <h1>🎰 로또 번호 생성기</h1>
+            <div class="controls">
+                <div class="control-item">
+                    <label for="gameCount">게임 수:</label>
+                    <select id="gameCount">
+                        <option value="1">1게임</option>
+                        <option value="2">2게임</option>
+                        <option value="3">3게임</option>
+                        <option value="4">4게임</option>
+                        <option value="5" selected>5게임</option>
+                    </select>
+                </div>
+                <div class="control-item">
+                    <input type="checkbox" id="bonusToggle" checked>
+                    <label for="bonusToggle">보너스 번호 포함</label>
+                </div>
+            </div>
+            <div class="result-area" id="result">
+                <p style="color:#aaa;">'번호 생성하기' 버튼을 눌러주세요.</p>
+            </div>
+            <button onclick="generateLotto()">번호 생성하기</button>
         </div>
 
-        <button onclick="generateLotto()">번호 생성하기</button>
-
-        <div class="contact-form-container">
-            <h2>제휴 문의</h2>
-            <form action="https://formspree.io/f/xrelwoov" method="POST" class="contact-form">
-                <div class="form-group">
-                    <label for="name">이름:</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">이메일:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="message">메시지:</label>
-                    <textarea id="message" name="message" rows="5" required></textarea>
-                </div>
-                <button type="submit">문의하기</button>
-            </form>
-
+        <div id="taste-test-tab" class="tab-content">
+            <h1>📸 자동차 vs 오토바이, 당신의 취향은?</h1>
+            <p>자동차나 오토바이 이미지를 업로드해주세요!</p>
+            <input type="file" id="image-upload" accept="image/*">
+            <div id="image-container">
+                <img id="image-preview" src="" alt="Image preview">
+            </div>
+            <button type="button" onclick="predict()">판별하기</button>
+            <div id="label-container"></div>
         </div>
-
-        <div id="disqus_thread" style="margin-top: 30px;"></div>
-        <script>
-            /**
-            *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-            *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
-            /*
-            var disqus_config = function () {
-            this.page.url = window.location.href;
-            this.page.identifier = window.location.href;
-            };
-            */
-            (function() { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = 'https://iseoi.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     </div>
 
-    <script>
-        // 로또 생성 함수
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+    <script type="text/javascript">
+        // --- Tab Handling ---
+        function openTab(tabName) {
+            let i, tabcontent, tabbuttons;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tabbuttons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabbuttons.length; i++) {
+                tabbuttons[i].className = tabbuttons[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName + '-tab').style.display = "block";
+            event.currentTarget.className += " active";
+        }
+        document.getElementById('lotto-tab').style.display = "block";
+
+
+        // --- Lotto Generator ---
         function generateLotto() {
-            // 1. 사용자 입력값 가져오기
             const gameCount = parseInt(document.getElementById('gameCount').value);
             const includeBonus = document.getElementById('bonusToggle').checked;
             const resultDiv = document.getElementById('result');
             const rowLabels = ['A', 'B', 'C', 'D', 'E'];
-
-            // 2. 화면 초기화
             resultDiv.innerHTML = '';
-
-            // 3. 게임 수만큼 반복
             for (let i = 0; i < gameCount; i++) {
-                
-                // 번호 뽑기 (중복 제거를 위해 Set 사용)
                 const numbers = new Set();
                 while (numbers.size < 6) {
                     numbers.add(Math.floor(Math.random() * 45) + 1);
                 }
-
-                // 배열로 변환 후 정렬 (오름차순)
                 const mainNumbers = Array.from(numbers).sort((a, b) => a - b);
-                
-                // 보너스 번호 뽑기 (기본 6개와 중복되지 않아야 함)
                 let bonusNumber = null;
                 if (includeBonus) {
                     while (true) {
@@ -436,98 +325,79 @@
                         }
                     }
                 }
-
-                // --- HTML 요소 생성 ---
-                
-                // 1) 행(Row) 생성
                 const rowDiv = document.createElement('div');
                 rowDiv.classList.add('lotto-row');
-
-                // 2) 라벨 (A, B, C...)
                 const labelSpan = document.createElement('span');
                 labelSpan.classList.add('row-label');
                 labelSpan.innerText = rowLabels[i];
                 rowDiv.appendChild(labelSpan);
-
-                // 3) 공 래퍼
                 const ballsWrapper = document.createElement('div');
                 ballsWrapper.classList.add('balls-wrapper');
-
-                // 4) 메인 번호 6개 그리기
                 mainNumbers.forEach(num => {
                     ballsWrapper.appendChild(createBall(num));
                 });
-
-                // 5) 보너스 번호 그리기 (옵션)
                 if (includeBonus && bonusNumber !== null) {
-                    // 더하기 기호
                     const plusSpan = document.createElement('span');
                     plusSpan.classList.add('plus-sign');
                     plusSpan.innerText = '+';
                     ballsWrapper.appendChild(plusSpan);
-
-                    // 보너스 공
                     ballsWrapper.appendChild(createBall(bonusNumber));
-                    
-                    // 보너스 텍스트 표시
                     const bonusText = document.createElement('span');
                     bonusText.classList.add('bonus-label');
                     bonusText.innerText = '보너스';
                     ballsWrapper.appendChild(bonusText);
                 }
-
                 rowDiv.appendChild(ballsWrapper);
                 resultDiv.appendChild(rowDiv);
             }
         }
-
-        // 공(Ball) HTML을 만들어주는 헬퍼 함수
         function createBall(number) {
             const ball = document.createElement('div');
             ball.classList.add('ball');
             ball.innerText = number;
-
-            // 색상 클래스 적용
             if (number <= 10) ball.classList.add('yellow');
             else if (number <= 20) ball.classList.add('blue');
             else if (number <= 30) ball.classList.add('red');
             else if (number <= 40) ball.classList.add('grey');
             else ball.classList.add('green');
-
             return ball;
         }
-    </script>
-    <script>
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
 
-        // Function to set the theme
-        function setTheme(isDark) {
-            if (isDark) {
-                body.classList.add('dark-mode');
-                themeToggle.checked = true;
-                localStorage.setItem('theme', 'dark');
-            } else {
-                body.classList.remove('dark-mode');
-                themeToggle.checked = false;
-                localStorage.setItem('theme', 'light');
+        // --- Taste Test (Teachable Machine) ---
+        const URL = "https://teachablemachine.withgoogle.com/models/7mnGnsF1T/";
+        let model, labelContainer, maxPredictions;
+        async function initTasteTest() {
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+            labelContainer = document.getElementById("label-container");
+            for (let i = 0; i < maxPredictions; i++) {
+                labelContainer.appendChild(document.createElement("div"));
+            }
+            const imageUpload = document.getElementById("image-upload");
+            const imagePreview = document.getElementById("image-preview");
+            imageUpload.addEventListener("change", (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        imagePreview.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        async function predict() {
+            const image = document.getElementById("image-preview");
+            const prediction = await model.predict(image);
+            for (let i = 0; i < maxPredictions; i++) {
+                const classPrediction =
+                    prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                labelContainer.childNodes[i].innerHTML = classPrediction;
             }
         }
-
-        // Event listener for the toggle
-        themeToggle.addEventListener('change', () => {
-            setTheme(themeToggle.checked);
-        });
-
-        // Check for saved theme preference
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                setTheme(true);
-            } else {
-                setTheme(false); // Default to light
-            }
-        });
+        initTasteTest();
     </script>
 </body>
 </html>
