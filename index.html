@@ -220,6 +220,106 @@
         body.dark-mode .result-area p {
             color: #777 !important;
         }
+
+        /* 폼 스타일 */
+        .contact-form-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            text-align: left;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .contact-form-container h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .contact-form .form-group {
+            margin-bottom: 15px;
+        }
+
+        .contact-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .contact-form input[type="text"],
+        .contact-form input[type="email"],
+        .contact-form textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box; /* 패딩이 너비에 포함되도록 */
+        }
+
+        .contact-form textarea {
+            resize: vertical; /* 세로 크기 조절 가능 */
+        }
+
+        .contact-form button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745; /* Green submit button */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .contact-form button[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        .form-note {
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+            margin-top: 15px;
+        }
+        .form-note a {
+            color: #4285f4;
+            text-decoration: none;
+        }
+        .form-note a:hover {
+            text-decoration: underline;
+        }
+
+        /* 다크 모드 폼 스타일 */
+        body.dark-mode .contact-form-container {
+            background-color: #333;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+        }
+        body.dark-mode .contact-form-container h2 {
+            color: #eee;
+        }
+        body.dark-mode .contact-form label {
+            color: #ddd;
+        }
+        body.dark-mode .contact-form input[type="text"],
+        body.dark-mode .contact-form input[type="email"],
+        body.dark-mode .contact-form textarea {
+            background-color: #444;
+            border-color: #555;
+            color: #eee;
+        }
+        body.dark-mode .form-note {
+            color: #aaa;
+        }
+        body.dark-mode .form-note a {
+            color: #69c8f2;
+        }
     </style>
 </head>
 <body>
@@ -256,6 +356,26 @@
         </div>
 
         <button onclick="generateLotto()">번호 생성하기</button>
+
+        <div class="contact-form-container">
+            <h2>제휴 문의</h2>
+            <form action="https://formspree.io/f/your_form_id" method="POST" class="contact-form">
+                <div class="form-group">
+                    <label for="name">이름:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">이메일:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">메시지:</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit">문의하기</button>
+            </form>
+            <p class="form-note">폼을 제출하기 전에 <a href="https://formspree.io/" target="_blank">Formspree</a>에서 'your_form_id'를 실제 폼 ID로 교체하고 활성화해주세요.</p>
+        </div>
     </div>
 
     <script>
